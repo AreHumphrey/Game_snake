@@ -7,7 +7,8 @@ from pygame.math import Vector2
 from settings import cell_number, cell_size
 
 main_menu = True
-
+icon = pygame.image.load("img/apple.png")
+pygame.display.set_icon(icon)
 
 class Button:
     def __init__(self, x, y, image):
@@ -72,22 +73,17 @@ class Snake:
     def add_block_to_snake(self):
         if len(self.body) >= 2:
             last_item = self.body[-1]
-            
         else:
             last_item = self.body[:]
         self.body.append(Vector2(last_item.x, last_item.y))
 
     def draw_head(self):
-        
         if self.direction == (1, 0):
             self.head = self.head_right
-            
         if self.direction == (-1, 0):
             self.head = self.head_left
-            
         if self.direction == (0, -1):
             self.head = self.head_up
-            
         if self.direction == (0, 1):
             self.head = self.head_down
 
@@ -101,24 +97,18 @@ class Snake:
                 screen.blit(self.head, snake_rect)
 
             elif not 0 <= i or not i == len(self.body) - 1:
-                
                 if self.body[i].x < self.body[i - 1].x or self.body[i].x > self.body[i - 1].x:
                     screen.blit(self.body_horizontal, snake_rect)
-                    
                 if self.body[i].y < self.body[i - 1].y or self.body[i].y > self.body[i - 1].y:
                     screen.blit(self.body_vertical, snake_rect)
             else:
                 if i == len(self.body) - 1:
-                    
                     if self.body[i].x < self.body[i - 1].x:
                         screen.blit(self.tail_left, snake_rect)
-                        
                     if self.body[i].x > self.body[i - 1].x:
                         screen.blit(self.tail_right, snake_rect)
-                        
                     if self.body[i].y < self.body[i - 1].y:
                         screen.blit(self.tail_up, snake_rect)
-                        
                     if self.body[i].y > self.body[i - 1].y:
                         screen.blit(self.tail_down, snake_rect)
                 else:
@@ -142,11 +132,9 @@ class Game:
         self.objects_eaten = 0
 
     def check_game_over(self):
-        if not (0 <= self.snake.body[0].x < cell_number) or (not 0 <= self.snake.body[0].y < cell_number):
+        if not 0 <= self.snake.body[0].x < cell_number or not 0 <= self.snake.body[0].y < cell_number:
             self.game_over = True
-            
         for block in self.snake.body[1:]:
-            
             if block == self.snake.body[0]:
                 self.game_over = True
 
@@ -197,9 +185,9 @@ end_button = Button(450, 350, end_img)
 
 new_start = (img_size[0] * 6, img_size[1] * 6)
 start_img = pygame.transform.scale(start_img, new_start)
-start_button = Button(270, 280, start_img)
+start_button = Button(250, 280, start_img)
 
-pygame.display.set_caption("Game_snake")
+pygame.display.set_caption("Game snake")
 
 
 def game():
@@ -211,14 +199,12 @@ def game():
 
     while True:
         for event in pygame.event.get():
-            
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
 
         if start_screen:
             screen.blit(bg_img, (0, 0))
-            
             if start_button.draw():
                 start_screen = False
                 game_over = False
@@ -231,7 +217,6 @@ def game():
             text = font.render("Game over", True, (200, 18, 0))
             text_rect = text.get_rect(center=(cell_size * cell_number // 2, cell_size * cell_number // 2))
             screen.blit(text, text_rect)
-            
             if end_button.draw():
                 pygame.quit()
                 sys.exit()
@@ -281,14 +266,23 @@ def game_loop():
         else:
 
             screen.blit(bg_img, (0, 0))
+
             font = pygame.font.SysFont('Futura', 60)
+
             text = font.render("Game over!", True, (0, 0, 0))
+
             text_rect = text.get_rect(center=(cell_size * cell_number // 2, cell_size * cell_number // 2 - 190))
+
             screen.blit(text, text_rect)
+
             score_text = font.render("Result: {}".format(Game.objects_eaten), True, (0, 0, 0))
+
             score_rect = score_text.get_rect(center=(cell_size * cell_number // 2, cell_size * cell_number // 2 - 110))
+
             screen.blit(score_text, score_rect)
+
             restart_button.draw()
+
             end_button.draw()
 
             if restart_button.draw():
